@@ -8,4 +8,5 @@ def about(request):
 def contact(request):
     return HttpResponse("hello contact")
 def video(request):
+
     return render(request,'webcam.html')
