@@ -164,7 +164,7 @@ function sendMsgOnClick(){
     var li = document.createElement('li');
     li.appendChild(document.createTextNode('me:' + message));
     messageList.appendChild(li);
-
+//get all the data channels stored in map peers
     var dataChannels = getDataChannels();
 
     message = username + ':' + message;
@@ -266,7 +266,7 @@ peer.addEventListener('datachannel', e => {
         console.log('connection opened!!');
     });
 
-    peet.dc.addEventListener('message',dcOnMessage);
+    peer.dc.addEventListener('message',dcOnMessage);
 
     mapPeers[peerUsername] = [peer, peer.dc];
 
@@ -293,7 +293,7 @@ peer.addEventListener('icecandidate' ,(event) => {
     if(event.candidate){
         console.log('New ice candidate:' ,JSON.stringify(peer.localDescription));
 
-        returns;
+        return;
     }
 
     sendSignal('new-answer', {
