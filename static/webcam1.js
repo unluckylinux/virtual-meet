@@ -75,12 +75,12 @@ webSocket.addEventListener('open', (e) => {
 
 webSocket.addEventListener('message', webSocketOnMessage);
 webSocket.addEventListener('close', (e) =>{
-    console.log('Connection Closed!!');
+    console.log('Connection Closed!!!');
 });
 
-webSocket.addEventListener('error',(e) =>{
-    console.log('Error Occured!!');
-});
+webSocket.addEventListener('error', (e) => {
+    console.log('Error Occured!!!');
+    });
 
 });
 
@@ -154,7 +154,7 @@ var btnSendMsg = document.querySelector('#btn-send-msg');
 
 var messageList = document.querySelector('#message-list');
 
-var messageInput = document.querySelector('msg');
+var messageInput = document.querySelector('#msg');
 
 btnSendMsg.addEventListener('click', sendMsgOnClick);
 
@@ -162,14 +162,14 @@ function sendMsgOnClick(){
     var message = messageInput.value;
 
     var li = document.createElement('li');
-    li.appendChild(document.createTextNode('me:' + message));
+    li.appendChild(document.createTextNode('YOU: ' + message));
     messageList.appendChild(li);
 //get all the data channels stored in map peers
     var dataChannels = getDataChannels();
 
-    message = username + ':' + message;
+    message = username + ': ' + message;
 
-    for(index in getDataChannels){
+    for(index in dataChannels){
         dataChannels[index].send(message);
     }
     messageInput.value = '';
@@ -188,14 +188,14 @@ function sendSignal(action, message){
 }
 
 function createOfferer(peerUsername, receiver_channel_name){
-    var peer = new RTCpeerconnection(null);
+    var peer = new RTCPeerConnection(null);
 
     addLocalTracks(peer);
 
 //create data channel
     var dc = peer.createDataChannel('channel');
     dc.addEventListener('open', () => {
-        console.log('connection open');
+        console.log('connection opened!!!');
     });
 
 //message event
@@ -226,7 +226,7 @@ peer.addEventListener('icecandidate' ,(event) => {
     if(event.candidate){
         console.log('New ice candidate:' ,JSON.stringify(peer.localDescription));
 
-        returns;
+        return;
     }
 
     sendSignal('new-offer', {
@@ -241,16 +241,12 @@ peer.addEventListener('icecandidate' ,(event) => {
             console.log('local description set successfully');
 
         });
-
-
-
-
 }
 
 function createAnswerer(offer, peerUsername, receiver_channel_name){
 
 
-    var peer = new RTCpeerconnection(null);
+    var peer = new RTCPeerConnection(null);
 
     addLocalTracks(peer);
 
@@ -260,10 +256,10 @@ function createAnswerer(offer, peerUsername, receiver_channel_name){
 var remoteVideo = createVideo(peerUsername);
 setOnTrack(peer, remoteVideo);
 
-peer.addEventListener('datachannel', e => {
+peer.addEventListener('dataChannel', e => {
     peer.dc = e.channel;
     peer.dc.addEventListener('open', () => {
-        console.log('connection opened!!');
+        console.log('connection opened!!!');
     });
 
     peer.dc.addEventListener('message',dcOnMessage);
@@ -306,14 +302,14 @@ peer.addEventListener('icecandidate' ,(event) => {
         .then(() => {
             console.log('Remote description set successfully for %s.',peerUsername);
 
-           return peer.createAnswerer();
+           return createAnswerer();
 
         })
         .then(a => {
             console.log('Answer cerated');
 
             peer.setLocalDescription(a);
-        })
+        });
 
 
 
@@ -340,7 +336,8 @@ function dcOnMessage(event){
 
 // new video element
 function createVideo(peerUsername){
-    var videoContainer = document.createElement('video');
+    var videoContainer = document.querySelector('#video-container');
+    var remoteVideo = document.createElement('video');
 
     remoteVideo.id = peerUsername + '-video';
     remoteVideo.autoplay = true;
@@ -363,7 +360,7 @@ function setOnTrack(peer ,remoteVideo){
     remoteVideo.srcObject = remoteStream;
 
     peer.addEventListener('track', async(event) => {
-        remoteStream.addTrack(event.track, remoteStream );
+        remoteStream.addTrack(event.track, remoteStream);
     });
 }
 
@@ -379,9 +376,9 @@ function getDataChannels(){
     var dataChannels = [];
 
     for(peerUsername in mapPeers){
-        var dataChannels = mapPeers[peerUsername][1];
+        var dataChannel = mapPeers[peerUsername][1];
 
-        dataChannels.push(dataChannels);
+        dataChannels.push(dataChannel);
 
     }
 
